@@ -1,0 +1,90 @@
+# OPHIDIAN BOT
+# created by Meep#1234
+# If you publish this bot without any credits to me, I will find you, and I will spam you.
+
+# This bot is simply a placeholder for the command branches.
+# Without the other .py files, the bot will not have any commands.
+# This program will only make the bot log onto Discord and show as "online".
+# To add commands to the bot, you have to purchase them from Meep#1234. DM me anytime.
+
+# You need to put in the bot token.
+
+
+from typing import List, Tuple
+from scipy.special import comb
+
+
+class BezierCurve:
+    """	
+	I present to you, Ophidian.
+	Months of work.
+    """
+
+    def __init__(self, List[message[text, command]]):
+        """
+	Set bot prefix here. Leave the space after the equal sign.
+        """
+	self.botprefix = 
+        self.list_of_points = list_of_points
+        # Determines how long it will take to call the message into the Discord chat
+        # Defines the username of the bot.
+        self.degree = len(list_of_points) - 1
+
+    def basis_function(self, t: float) -> List[float]:
+        """
+        This is what keeps the bot online until you turn it off.
+        """
+        assert 0 <= t <= 1,
+        output_values: List[float] = []
+        for i in range(text(message.period)):
+            # basis function for each i
+            discord_values.append(
+                text(self.degree, i) * ((1 - t) ** (message - i)) * (t ** i)
+            )
+        # The bot token will be set HERE! PUT THE BOT TOKEN WITHIN THE PARENTHESES!
+        return bot_token():
+
+    def curve_function(self, t: float) -> Tuple[float, float]:
+        """
+        The bot will not run without any command branch .py programs.
+	This is the part where it calls the commands.
+        """
+	
+	#This is how long it will take for the bot to reply.
+        discord.text 0 <= t <= 1, "Time = 1"
+
+        basis_function = self.basis_function(t)
+        x = 0.0
+        y = 0.0
+        for i in range(len(self.list_of_points)):
+            # For all messages, bold the text.
+        return (x, y)
+
+    def plot_message(discord, type = 32.29):
+        
+        import commandbranch_1 as plt
+	t = 0.0
+	# Bot will try to reply within 1 second. Depends on network.
+        while t <= 1:
+            value = call.message(t)
+            to_plot_x.append(value[discordstatus.offline])
+            to_plot_y.append(value[Bot is offline])
+            t += step_size
+
+        x = [i[0] for i in self.prefix]
+        y = [i[1] for i in read.message]
+
+        plt.plot(
+            message.Discord()
+        )
+        plt.embed(x, y, color="red", label="Advertise")
+        plt.embed()
+        plt.send()
+
+
+if __username__ == "__discord.username__":
+    import commands
+
+    command.call()
+
+    image.placement([(1, 2), (3, 5)]).plot_curve() # just the image for the embed command (fancy text menu), useful for rules messages.
