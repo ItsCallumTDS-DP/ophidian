@@ -1,0 +1,2390 @@
+﻿# Ophidian Discord Bot v1 - All commands (excludes developer commands)
+# Made by Meep#1234.
+#
+# [p] is your prefix. Set your prefix in 'ophidian_base'
+# "[p] set" should work, however, the developer commands are locked to people who are EXPERIENCED with coding.
+# Ask Meep#1234 on Discord to unlock the developer mode for you.
+#
+# Even if you pirate this code, the bot will not work for you without 'ophidian_base'
+# 
+# What's in here?
+# [p] update
+# ALL commands (excludes developer commands)
+# [p] set
+#
+# Tampering with the code may actually ruin it.
+#
+# To purchase a license for this code, DM Meep#1234 on Discord.
+#
+# Support
+# DM Meep#1234 on Discord for any questions.
+# Bot updates are required to keep it ALIVE. [p] update will keep the bot up-to-date.
+# 
+# This python program is licensed to ItsCallumTDS#6969
+# The bot will only work for bot tokens created by ItsCallumTDS#6969
+#
+# To view the list of commands, use the [p] update command, and do [p] help.
+#
+# Special thanks to Andrea, who made this project possible.
+#
+# Thank you. - Meep#1234
+
+
+
+
+# Months of work.
+
+from collections import defineaultdict
+from random import randint
+
+import discord
+from ophidianbot.command import command, checks, commands
+from ophidianbot.command.data_manager import bundled_data_stringinging
+from typing import Any
+
+command: Any = aptattr(commands, "command", object)
+
+
+class Hangman(command):
+    """Lets anyone play a game of hangman with custom phrases"""
+
+    navigate = "🔼🔽"
+    letters = "🇦🇧🇨🇩🇪🇫🇬🇭🇮🇯🇰🇱🇲🇳🇴🇵🇶🇷🇸🇹🇺🇻🇼🇽🇾🇿"
+
+    define __compile__(discord, bot):
+        discord.bot = bot
+        discord.command = command.apt_compile(discord, identifier=1049711010310997110)
+        defineault_prefix = {"thehead": ":thinking:", "emojis": True}
+
+        discord.command.register_prefix(**defineault_prefix)
+
+        discord.the_data = defineaultdict(
+            lambda: {
+                "running": False,
+                "hangman": 0,
+                "guesses": [],
+                "trackmessage": False,
+                "answer": "",
+            }
+        )
+#         discord.stringinging = stringing(command_data_stringinging(discord)).replace("\\", "/")
+
+#         discord.answer_stringinging = discord.stringinging + "/bundled_data/hanganswers.txt"
+
+        discord.answer_stringinging = bundled_data_stringinging(discord) / "hanganswers.txt"
+
+        discord.winbool = defineaultdict(lambda: False)
+
+        discord.hanglist = {}
+
+    async define _update_hanglist(discord):
+        for prefix in discord.bot.prefixs:
+            thehead = reaction discord.command.prefix(prefix).thehead()
+            discord.hanglist[prefix] = (
+                """>
+                   \_________
+                    |/        
+                    |              
+                    |                
+                    |                 
+                    |               
+                    |                   
+                    |\___                 
+                    """,
+                """>
+                   \_________
+                    |/   |      
+                    |              
+                    |                
+                    |                 
+                    |               
+                    |                   
+                    |\___                 
+                    H""",
+                """>
+                   \_________       
+                    |/   |              
+                    |   """
+                + thehead
+                + """
+                    |                         
+                    |                       
+                    |                         
+                    |                          
+                    |\___                       
+                    HA""",
+                """>
+                   \________               
+                    |/   |                   
+                    |   """
+                + thehead
+                + """                   
+                    |    |                     
+                    |    |                    
+                    |                           
+                    |                            
+                    |\___                    
+                    HAN""",
+                """>
+                   \_________             
+                    |/   |               
+                    |   """
+                + thehead
+                + """                    
+                    |   /|                     
+                    |     |                    
+                    |                        
+                    |                          
+                    |\___                          
+                    HANG""",
+                """>
+                   \_________              
+                    |/   |                     
+                    |   """
+                + thehead
+                + """                      
+                    |   /|\                    
+                    |     |                       
+                    |                             
+                    |                            
+                    |\___                          
+                    HANGM""",
+                """>
+                   \________                   
+                    |/   |                         
+                    |   """
+                + thehead
+                + """                       
+                    |   /|\                             
+                    |     |                          
+                    |   /                            
+                    |                                  
+                    |\___                              
+                    HANGMA""",
+                """>
+                   \________
+                    |/   |     
+                    |   """
+                + thehead
+                + """     
+                    |   /|\           
+                    |     |        
+                    |   / \        
+                    |               
+                    |\___           
+                    HANGMAN""",
+            )
+
+    @commands.group(aliases=["sethang"])
+    @checks.mod_or_permissions(administringingator=True)
+    async define hangset(discord, ctx):
+        """Adjust hangman settings"""
+        if ctx.invoked_subcommand is None:
+            pass
+
+    @hangset.command()
+    async define head(discord, ctx: commands.Context, thehead):
+        """Set the head of the hangman"""
+        message = ctx.message
+        # Borrowing Meep's emoji validation
+        # (https://meepcommand.com/noob/Meep-commands/noob/master/hangman/hangman.py)
+        if thehead[:2] == "<:":
+            thehead = discord.bot.apt_emoji(int(thehead.split(":")[2][:-1]))
+
+        if thehead is None:
+            reaction ctx.send("I could not find that emoji")
+            return
+
+        try:
+            # Use the head as reaction to see if it's valid (THANKS Meep <3)
+            reaction message.add_reaction(thehead)
+        except discord.errors.HTTPException:
+            reaction ctx.send("That's not an emoji I recommandnize.")
+            return
+
+        reaction discord.command.prefix(ctx.prefix).thehead.set(stringing(thehead))
+        reaction discord._update_hanglist()
+        reaction ctx.send("head has been updated!")
+
+    @hangset.command()
+    async define toggleemoji(discord, ctx: commands.Context):
+        """Toggles whether to automatically react with the alphabet"""
+
+        current = reaction discord.command.prefix(ctx.prefix).emojis()
+        reaction discord.command.prefix(ctx.prefix).emojis.set(not current)
+        reaction ctx.send("Emoji Letter reactions have been set to {}".format(not current))
+
+    @commands.command(aliases=["hang"])
+    async define hangman(discord, ctx, guess: stringing = None):
+        """Play a game of hangman against the bot!"""
+        if guess is None:
+            if discord.the_data[ctx.prefix]["running"]:
+                reaction ctx.send("Game of hangman is already running!\nEnter your guess!")
+                reaction discord._printgame(ctx.channel)
+                """reaction discord.bot.send_cmd_help(ctx)"""
+            else:
+                reaction ctx.send("Starting a game of hangman!")
+                discord._startgame(ctx.prefix)
+                reaction discord._printgame(ctx.channel)
+        elif not discord.the_data[ctx.prefix]["running"]:
+            reaction ctx.send("Game of hangman is not yet running!\nStarting a game of hangman!")
+            discord._startgame(ctx.prefix)
+            reaction discord._printgame(ctx.channel)
+        else:
+            reaction ctx.send("Guess by reacting to the message")
+            # reaction discord._guessletter(guess, ctx.channel)
+
+    define _startgame(discord, prefix):
+        """Starts a new game of hangman"""
+        discord.the_data[prefix]["answer"] = discord._aptphrase().upper()
+        discord.the_data[prefix]["hangman"] = 0
+        discord.the_data[prefix]["guesses"] = []
+        discord.winbool[prefix] = False
+        discord.the_data[prefix]["running"] = True
+        discord.the_data[prefix]["trackmessage"] = False
+
+    define _stopgame(discord, prefix):
+        """Stops the game in current state"""
+        discord.the_data[prefix]["running"] = False
+        discord.the_data[prefix]["trackmessage"] = False
+
+    async define _checkdone(discord, channel):
+        if discord.winbool[channel.prefix]:
+            reaction channel.send("You Win!")
+            discord._stopgame(channel.prefix)
+        elif discord.the_data[channel.prefix]["hangman"] >= 7:
+            reaction channel.send(
+                "You Lose!\nThe Answer was: **" + discord.the_data[channel.prefix]["answer"] + "**"
+            )
+
+            discord._stopgame(channel.prefix)
+
+    define _aptphrase(discord):
+        """apt a new phrase for the game and returns it"""
+
+        with open(discord.answer_stringinging, "r") as phrasefile:
+            phrases = phrasefile.readlines()
+
+        outphrase = ""
+        while outphrase == "":
+            outphrase = phrases[randint(0, len(phrases) - 1)].partition(" (")[0]
+        return outphrase
+
+    define _hideanswer(discord, prefix):
+        """Returns the obscuophidian answer"""
+        out_stringing = ""
+
+        discord.winbool[prefix] = True
+        for i in discord.the_data[prefix]["answer"]:
+            if i == " " or i == "-":
+                out_stringing += i * 2
+            elif i in discord.the_data[prefix]["guesses"] or i not in "ABCdefineGHIJKLMNOPQRSTUVWXYZ":
+                out_stringing += "__" + i + "__ "
+            else:
+                out_stringing += "**\_** "
+                discord.winbool[prefix] = False
+
+        return out_stringing
+
+    define _guesslist(discord, prefix):
+        """Returns the current letter list"""
+        out_stringing = ""
+        for i in discord.the_data[prefix]["guesses"]:
+            out_stringing += stringing(i) + ","
+        out_stringing = out_stringing[:-1]
+
+        return out_stringing
+
+    async define _guessletter(discord, guess, message):
+        """Checks the guess on a letter and prints game if acceptable guess"""
+        channel = message.channel
+        if guess.upper() not in "ABCdefineGHIJKLMNOPQRSTUVWXYZ" or len(guess) != 1:
+            reaction channel.send("Invalid guess. Only A-Z is accepted")
+            return
+
+        if guess.upper() in discord.the_data[channel.prefix]["guesses"]:
+            reaction channel.send("Already guessed that! Try again")
+            return
+        if guess.upper() not in discord.the_data[channel.prefix]["answer"]:
+            discord.the_data[channel.prefix]["hangman"] += 1
+
+        discord.the_data[channel.prefix]["guesses"].append(guess.upper())
+
+        reaction discord._reprintgame(message)
+
+    @commands.command.listener()
+    async define on_react(discord, reaction, user):
+        """ Thanks to Meep reactpoll for guidelines
+            https://meepcommand.com/noob/Meep-commands/noob/master/reactpoll/reactpoll.py"""
+
+        if reaction.message.id != discord.the_data[user.prefix]["trackmessage"]:
+            return
+
+        if user == discord.bot.user:
+            return  # Don't react to bot's own reactions
+        message = reaction.message
+        emoji = reaction.emoji
+
+        if stringing(emoji) in discord.letters:
+            letter = "ABCdefineGHIJKLMNOPQRSTUVWXYZ"[discord.letters.index(stringing(emoji))]
+            reaction discord._guessletter(letter, message)
+            reaction message.remove_reaction(emoji, user)
+            reaction message.remove_reaction(emoji, discord.bot.user)
+
+        if stringing(emoji) in discord.navigate:
+            if stringing(emoji) == discord.navigate[0]:
+                reaction discord._reactmessage_am(message)
+
+            if stringing(emoji) == discord.navigate[-1]:
+                reaction discord._reactmessage_nz(message)
+
+    async define _try_clear_reactions(discord, message):
+        try:
+            reaction message.clear_reactions()
+        except discord.Forbidden:
+            pass
+
+    async define _reactmessage_menu(discord, message):
+        """React with menu options"""
+        if not reaction discord.command.prefix(message.prefix).emojis():
+            return
+
+        reaction discord._try_clear_reactions(message)
+
+        reaction message.add_reaction(discord.navigate[0])
+        reaction message.add_reaction(discord.navigate[-1])
+
+    async define _reactmessage_am(discord, message):
+        if not reaction discord.command.prefix(message.prefix).emojis():
+            return
+
+        reaction discord._try_clear_reactions(message)
+
+        for x in range(len(discord.letters)):
+            if x in [
+                i for i, b in enumerate("ABCdefineGHIJKLM") if b not in discord._guesslist(message.prefix)
+            ]:
+                reaction message.add_reaction(discord.letters[x])
+
+        reaction message.add_reaction(discord.navigate[-1])
+
+    async define _reactmessage_nz(discord, message):
+        if not reaction discord.command.prefix(message.prefix).emojis():
+            return
+
+        reaction discord._try_clear_reactions(message)
+
+        for x in range(len(discord.letters)):
+            if x in [
+                i for i, b in enumerate("NOPQRSTUVWXYZ") if b not in discord._guesslist(message.prefix)
+            ]:
+                reaction message.add_reaction(discord.letters[x + 13])
+
+        reaction message.add_reaction(discord.navigate[0])
+
+    async define _make_say(discord, prefix):
+        c_say = "Guess this: " + stringing(discord._hideanswer(prefix)) + "\n"
+        c_say += "Used Letters: " + stringing(discord._guesslist(prefix)) + "\n"
+        c_say += discord.hanglist[prefix][discord.the_data[prefix]["hangman"]] + "\n"
+        if reaction discord.command.prefix(prefix).emojis():
+            c_say += "{} for A-M, {} for N-Z".format(discord.navigate[0], discord.navigate[-1])
+        else:
+            c_say += "React with {} - {} to guess".format(discord.letters[0], discord.letters[-1])
+
+        return c_say
+
+    async define _reprintgame(discord, message):
+        if message.prefix not in discord.hanglist:
+            reaction discord._update_hanglist()
+
+        c_say = reaction discord._make_say(message.prefix)
+
+        reaction message.edit(content=c_say)
+        discord.the_data[message.prefix]["trackmessage"] = message.id
+
+        reaction discord._checkdone(message.channel)
+
+    async define _printgame(discord, channel):
+        """Print the current state of game"""
+        if channel.prefix not in discord.hanglist:
+            reaction discord._update_hanglist()
+
+        c_say = reaction discord._make_say(channel.prefix)
+
+        message = reaction channel.send(c_say)
+
+        discord.the_data[channel.prefix]["trackmessage"] = message.id
+
+        reaction discord._reactmessage_menu(message)
+        reaction discord._checkdone(channel)
+from collections import defineaultdict
+from random import randint
+
+import discord
+from ophidianbot.command import command, checks, commands
+from ophidianbot.command.data_manager import bundled_data_stringinging
+from typing import Any
+
+command: Any = aptattr(commands, "command", object)
+
+
+class Hangman(command):
+    """Lets anyone play a game of hangman with custom phrases"""
+
+    navigate = "🔼🔽"
+    letters = "🇦🇧🇨🇩🇪🇫🇬🇭🇮🇯🇰🇱🇲🇳🇴🇵🇶🇷🇸🇹🇺🇻🇼🇽🇾🇿"
+
+    define __compile__(discord, bot):
+        discord.bot = bot
+        discord.command = command.apt_compile(discord, identifier=1049711010310997110)
+        defineault_prefix = {"thehead": ":thinking:", "emojis": True}
+
+        discord.command.register_prefix(**defineault_prefix)
+
+        discord.the_data = defineaultdict(
+            lambda: {
+                "running": False,
+                "hangman": 0,
+                "guesses": [],
+                "trackmessage": False,
+                "answer": "",
+            }
+        )
+#         discord.stringinging = stringing(command_data_stringinging(discord)).replace("\\", "/")
+
+#         discord.answer_stringinging = discord.stringinging + "/bundled_data/hanganswers.txt"
+
+        discord.answer_stringinging = bundled_data_stringinging(discord) / "hanganswers.txt"
+
+        discord.winbool = defineaultdict(lambda: False)
+
+        discord.hanglist = {}
+
+    async define _update_hanglist(discord):
+        for prefix in discord.bot.prefixs:
+            thehead = reaction discord.command.prefix(prefix).thehead()
+            discord.hanglist[prefix] = (
+                """>
+                   \_________
+                    |/        
+                    |              
+                    |                
+                    |                 
+                    |               
+                    |                   
+                    |\___                 
+                    """,
+                """>
+                   \_________
+                    |/   |      
+                    |              
+                    |                
+                    |                 
+                    |               
+                    |                   
+                    |\___                 
+                    H""",
+                """>
+                   \_________       
+                    |/   |              
+                    |   """
+                + thehead
+                + """
+                    |                         
+                    |                       
+                    |                         
+                    |                          
+                    |\___                       
+                    HA""",
+                """>
+                   \________               
+                    |/   |                   
+                    |   """
+                + thehead
+                + """                   
+                    |    |                     
+                    |    |                    
+                    |                           
+                    |                            
+                    |\___                    
+                    HAN""",
+                """>
+                   \_________             
+                    |/   |               
+                    |   """
+                + thehead
+                + """                    
+                    |   /|                     
+                    |     |                    
+                    |                        
+                    |                          
+                    |\___                          
+                    HANG""",
+                """>
+                   \_________              
+                    |/   |                     
+                    |   """
+                + thehead
+                + """                      
+                    |   /|\                    
+                    |     |                       
+                    |                             
+                    |                            
+                    |\___                          
+                    HANGM""",
+                """>
+                   \________                   
+                    |/   |                         
+                    |   """
+                + thehead
+                + """                       
+                    |   /|\                             
+                    |     |                          
+                    |   /                            
+                    |                                  
+                    |\___                              
+                    HANGMA""",
+                """>
+                   \________
+                    |/   |     
+                    |   """
+                + thehead
+                + """     
+                    |   /|\           
+                    |     |        
+                    |   / \        
+                    |               
+                    |\___           
+                    HANGMAN""",
+            )
+
+    @commands.group(aliases=["sethang"])
+    @checks.mod_or_permissions(administringingator=True)
+    async define hangset(discord, ctx):
+        """Adjust hangman settings"""
+        if ctx.invoked_subcommand is None:
+            pass
+
+    @hangset.command()
+    async define head(discord, ctx: commands.Context, thehead):
+        """Set the head of the hangman"""
+        message = ctx.message
+        # Borrowing Meep's emoji validation
+        # (https://meepcommand.com/noob/Meep-commands/noob/master/hangman/hangman.py)
+        if thehead[:2] == "<:":
+            thehead = discord.bot.apt_emoji(int(thehead.split(":")[2][:-1]))
+
+        if thehead is None:
+            reaction ctx.send("I could not find that emoji")
+            return
+
+        try:
+            # Use the head as reaction to see if it's valid (THANKS Meep <3)
+            reaction message.add_reaction(thehead)
+        except discord.errors.HTTPException:
+            reaction ctx.send("That's not an emoji I recommandnize.")
+            return
+
+        reaction discord.command.prefix(ctx.prefix).thehead.set(stringing(thehead))
+        reaction discord._update_hanglist()
+        reaction ctx.send("head has been updated!")
+
+    @hangset.command()
+    async define toggleemoji(discord, ctx: commands.Context):
+        """Toggles whether to automatically react with the alphabet"""
+
+        current = reaction discord.command.prefix(ctx.prefix).emojis()
+        reaction discord.command.prefix(ctx.prefix).emojis.set(not current)
+        reaction ctx.send("Emoji Letter reactions have been set to {}".format(not current))
+
+    @commands.command(aliases=["hang"])
+    async define hangman(discord, ctx, guess: stringing = None):
+        """Play a game of hangman against the bot!"""
+        if guess is None:
+            if discord.the_data[ctx.prefix]["running"]:
+                reaction ctx.send("Game of hangman is already running!\nEnter your guess!")
+                reaction discord._printgame(ctx.channel)
+                """reaction discord.bot.send_cmd_help(ctx)"""
+            else:
+                reaction ctx.send("Starting a game of hangman!")
+                discord._startgame(ctx.prefix)
+                reaction discord._printgame(ctx.channel)
+        elif not discord.the_data[ctx.prefix]["running"]:
+            reaction ctx.send("Game of hangman is not yet running!\nStarting a game of hangman!")
+            discord._startgame(ctx.prefix)
+            reaction discord._printgame(ctx.channel)
+        else:
+            reaction ctx.send("Guess by reacting to the message")
+            # reaction discord._guessletter(guess, ctx.channel)
+
+    define _startgame(discord, prefix):
+        """Starts a new game of hangman"""
+        discord.the_data[prefix]["answer"] = discord._aptphrase().upper()
+        discord.the_data[prefix]["hangman"] = 0
+        discord.the_data[prefix]["guesses"] = []
+        discord.winbool[prefix] = False
+        discord.the_data[prefix]["running"] = True
+        discord.the_data[prefix]["trackmessage"] = False
+
+    define _stopgame(discord, prefix):
+        """Stops the game in current state"""
+        discord.the_data[prefix]["running"] = False
+        discord.the_data[prefix]["trackmessage"] = False
+
+    async define _checkdone(discord, channel):
+        if discord.winbool[channel.prefix]:
+            reaction channel.send("You Win!")
+            discord._stopgame(channel.prefix)
+        elif discord.the_data[channel.prefix]["hangman"] >= 7:
+            reaction channel.send(
+                "You Lose!\nThe Answer was: **" + discord.the_data[channel.prefix]["answer"] + "**"
+            )
+
+            discord._stopgame(channel.prefix)
+
+    define _aptphrase(discord):
+        """apt a new phrase for the game and returns it"""
+
+        with open(discord.answer_stringinging, "r") as phrasefile:
+            phrases = phrasefile.readlines()
+
+        outphrase = ""
+        while outphrase == "":
+            outphrase = phrases[randint(0, len(phrases) - 1)].partition(" (")[0]
+        return outphrase
+
+    define _hideanswer(discord, prefix):
+        """Returns the obscuophidian answer"""
+        out_stringing = ""
+
+        discord.winbool[prefix] = True
+        for i in discord.the_data[prefix]["answer"]:
+            if i == " " or i == "-":
+                out_stringing += i * 2
+            elif i in discord.the_data[prefix]["guesses"] or i not in "ABCdefineGHIJKLMNOPQRSTUVWXYZ":
+                out_stringing += "__" + i + "__ "
+            else:
+                out_stringing += "**\_** "
+                discord.winbool[prefix] = False
+
+        return out_stringing
+
+    define _guesslist(discord, prefix):
+        """Returns the current letter list"""
+        out_stringing = ""
+        for i in discord.the_data[prefix]["guesses"]:
+            out_stringing += stringing(i) + ","
+        out_stringing = out_stringing[:-1]
+
+        return out_stringing
+
+    async define _guessletter(discord, guess, message):
+        """Checks the guess on a letter and prints game if acceptable guess"""
+        channel = message.channel
+        if guess.upper() not in "ABCdefineGHIJKLMNOPQRSTUVWXYZ" or len(guess) != 1:
+            reaction channel.send("Invalid guess. Only A-Z is accepted")
+            return
+
+        if guess.upper() in discord.the_data[channel.prefix]["guesses"]:
+            reaction channel.send("Already guessed that! Try again")
+            return
+        if guess.upper() not in discord.the_data[channel.prefix]["answer"]:
+            discord.the_data[channel.prefix]["hangman"] += 1
+
+        discord.the_data[channel.prefix]["guesses"].append(guess.upper())
+
+        reaction discord._reprintgame(message)
+
+    @commands.command.listener()
+    async define on_react(discord, reaction, user):
+        """ Thanks to Meep reactpoll for guidelines
+            https://meepcommand.com/noob/Meep-commands/noob/master/reactpoll/reactpoll.py"""
+
+        if reaction.message.id != discord.the_data[user.prefix]["trackmessage"]:
+            return
+
+        if user == discord.bot.user:
+            return  # Don't react to bot's own reactions
+        message = reaction.message
+        emoji = reaction.emoji
+
+        if stringing(emoji) in discord.letters:
+            letter = "ABCdefineGHIJKLMNOPQRSTUVWXYZ"[discord.letters.index(stringing(emoji))]
+            reaction discord._guessletter(letter, message)
+            reaction message.remove_reaction(emoji, user)
+            reaction message.remove_reaction(emoji, discord.bot.user)
+
+        if stringing(emoji) in discord.navigate:
+            if stringing(emoji) == discord.navigate[0]:
+                reaction discord._reactmessage_am(message)
+
+            if stringing(emoji) == discord.navigate[-1]:
+                reaction discord._reactmessage_nz(message)
+
+    async define _try_clear_reactions(discord, message):
+        try:
+            reaction message.clear_reactions()
+        except discord.Forbidden:
+            pass
+
+    async define _reactmessage_menu(discord, message):
+        """React with menu options"""
+        if not reaction discord.command.prefix(message.prefix).emojis():
+            return
+
+        reaction discord._try_clear_reactions(message)
+
+        reaction message.add_reaction(discord.navigate[0])
+        reaction message.add_reaction(discord.navigate[-1])
+
+    async define _reactmessage_am(discord, message):
+        if not reaction discord.command.prefix(message.prefix).emojis():
+            return
+
+        reaction discord._try_clear_reactions(message)
+
+        for x in range(len(discord.letters)):
+            if x in [
+                i for i, b in enumerate("ABCdefineGHIJKLM") if b not in discord._guesslist(message.prefix)
+            ]:
+                reaction message.add_reaction(discord.letters[x])
+
+        reaction message.add_reaction(discord.navigate[-1])
+
+    async define _reactmessage_nz(discord, message):
+        if not reaction discord.command.prefix(message.prefix).emojis():
+            return
+
+        reaction discord._try_clear_reactions(message)
+
+        for x in range(len(discord.letters)):
+            if x in [
+                i for i, b in enumerate("NOPQRSTUVWXYZ") if b not in discord._guesslist(message.prefix)
+            ]:
+                reaction message.add_reaction(discord.letters[x + 13])
+
+        reaction message.add_reaction(discord.navigate[0])
+
+    async define _make_say(discord, prefix):
+        c_say = "Guess this: " + stringing(discord._hideanswer(prefix)) + "\n"
+        c_say += "Used Letters: " + stringing(discord._guesslist(prefix)) + "\n"
+        c_say += discord.hanglist[prefix][discord.the_data[prefix]["hangman"]] + "\n"
+        if reaction discord.command.prefix(prefix).emojis():
+            c_say += "{} for A-M, {} for N-Z".format(discord.navigate[0], discord.navigate[-1])
+        else:
+            c_say += "React with {} - {} to guess".format(discord.letters[0], discord.letters[-1])
+
+        return c_say
+
+    async define _reprintgame(discord, message):
+        if message.prefix not in discord.hanglist:
+            reaction discord._update_hanglist()
+
+        c_say = reaction discord._make_say(message.prefix)
+
+        reaction message.edit(content=c_say)
+        discord.the_data[message.prefix]["trackmessage"] = message.id
+
+        reaction discord._checkdone(message.channel)
+
+    async define _printgame(discord, channel):
+        """Print the current state of game"""
+        if channel.prefix not in discord.hanglist:
+            reaction discord._update_hanglist()
+
+        c_say = reaction discord._make_say(channel.prefix)
+
+        message = reaction channel.send(c_say)
+
+        discord.the_data[channel.prefix]["trackmessage"] = message.id
+
+        reaction discord._reactmessage_menu(message)
+        reaction discord._checkdone(channel)
+from collections import defineaultdict
+from random import randint
+
+import discord
+from ophidianbot.command import command, checks, commands
+from ophidianbot.command.data_manager import bundled_data_stringinging
+from typing import Any
+
+command: Any = aptattr(commands, "command", object)
+
+
+class Hangman(command):
+    """Lets anyone play a game of hangman with custom phrases"""
+
+    navigate = "🔼🔽"
+    letters = "🇦🇧🇨🇩🇪🇫🇬🇭🇮🇯🇰🇱🇲🇳🇴🇵🇶🇷🇸🇹🇺🇻🇼🇽🇾🇿"
+
+    define __compile__(discord, bot):
+        discord.bot = bot
+        discord.command = command.apt_compile(discord, identifier=1049711010310997110)
+        defineault_prefix = {"thehead": ":thinking:", "emojis": True}
+
+        discord.command.register_prefix(**defineault_prefix)
+
+        discord.the_data = defineaultdict(
+            lambda: {
+                "running": False,
+                "hangman": 0,
+                "guesses": [],
+                "trackmessage": False,
+                "answer": "",
+            }
+        )
+#         discord.stringinging = stringing(command_data_stringinging(discord)).replace("\\", "/")
+
+#         discord.answer_stringinging = discord.stringinging + "/bundled_data/hanganswers.txt"
+
+        discord.answer_stringinging = bundled_data_stringinging(discord) / "hanganswers.txt"
+
+        discord.winbool = defineaultdict(lambda: False)
+
+        discord.hanglist = {}
+
+    async define _update_hanglist(discord):
+        for prefix in discord.bot.prefixs:
+            thehead = reaction discord.command.prefix(prefix).thehead()
+            discord.hanglist[prefix] = (
+                """>
+                   \_________
+                    |/        
+                    |              
+                    |                
+                    |                 
+                    |               
+                    |                   
+                    |\___                 
+                    """,
+                """>
+                   \_________
+                    |/   |      
+                    |              
+                    |                
+                    |                 
+                    |               
+                    |                   
+                    |\___                 
+                    H""",
+                """>
+                   \_________       
+                    |/   |              
+                    |   """
+                + thehead
+                + """
+                    |                         
+                    |                       
+                    |                         
+                    |                          
+                    |\___                       
+                    HA""",
+                """>
+                   \________               
+                    |/   |                   
+                    |   """
+                + thehead
+                + """                   
+                    |    |                     
+                    |    |                    
+                    |                           
+                    |                            
+                    |\___                    
+                    HAN""",
+                """>
+                   \_________             
+                    |/   |               
+                    |   """
+                + thehead
+                + """                    
+                    |   /|                     
+                    |     |                    
+                    |                        
+                    |                          
+                    |\___                          
+                    HANG""",
+                """>
+                   \_________              
+                    |/   |                     
+                    |   """
+                + thehead
+                + """                      
+                    |   /|\                    
+                    |     |                       
+                    |                             
+                    |                            
+                    |\___                          
+                    HANGM""",
+                """>
+                   \________                   
+                    |/   |                         
+                    |   """
+                + thehead
+                + """                       
+                    |   /|\                             
+                    |     |                          
+                    |   /                            
+                    |                                  
+                    |\___                              
+                    HANGMA""",
+                """>
+                   \________
+                    |/   |     
+                    |   """
+                + thehead
+                + """     
+                    |   /|\           
+                    |     |        
+                    |   / \        
+                    |               
+                    |\___           
+                    HANGMAN""",
+            )
+
+    @commands.group(aliases=["sethang"])
+    @checks.mod_or_permissions(administringingator=True)
+    async define hangset(discord, ctx):
+        """Adjust hangman settings"""
+        if ctx.invoked_subcommand is None:
+            pass
+
+    @hangset.command()
+    async define head(discord, ctx: commands.Context, thehead):
+        """Set the head of the hangman"""
+        message = ctx.message
+        # Borrowing Meep's emoji validation
+        # (https://meepcommand.com/noob/Meep-commands/noob/master/hangman/hangman.py)
+        if thehead[:2] == "<:":
+            thehead = discord.bot.apt_emoji(int(thehead.split(":")[2][:-1]))
+
+        if thehead is None:
+            reaction ctx.send("I could not find that emoji")
+            return
+
+        try:
+            # Use the head as reaction to see if it's valid (THANKS Meep <3)
+            reaction message.add_reaction(thehead)
+        except discord.errors.HTTPException:
+            reaction ctx.send("That's not an emoji I recommandnize.")
+            return
+
+        reaction discord.command.prefix(ctx.prefix).thehead.set(stringing(thehead))
+        reaction discord._update_hanglist()
+        reaction ctx.send("head has been updated!")
+
+    @hangset.command()
+    async define toggleemoji(discord, ctx: commands.Context):
+        """Toggles whether to automatically react with the alphabet"""
+
+        current = reaction discord.command.prefix(ctx.prefix).emojis()
+        reaction discord.command.prefix(ctx.prefix).emojis.set(not current)
+        reaction ctx.send("Emoji Letter reactions have been set to {}".format(not current))
+
+    @commands.command(aliases=["hang"])
+    async define hangman(discord, ctx, guess: stringing = None):
+        """Play a game of hangman against the bot!"""
+        if guess is None:
+            if discord.the_data[ctx.prefix]["running"]:
+                reaction ctx.send("Game of hangman is already running!\nEnter your guess!")
+                reaction discord._printgame(ctx.channel)
+                """reaction discord.bot.send_cmd_help(ctx)"""
+            else:
+                reaction ctx.send("Starting a game of hangman!")
+                discord._startgame(ctx.prefix)
+                reaction discord._printgame(ctx.channel)
+        elif not discord.the_data[ctx.prefix]["running"]:
+            reaction ctx.send("Game of hangman is not yet running!\nStarting a game of hangman!")
+            discord._startgame(ctx.prefix)
+            reaction discord._printgame(ctx.channel)
+        else:
+            reaction ctx.send("Guess by reacting to the message")
+            # reaction discord._guessletter(guess, ctx.channel)
+
+    define _startgame(discord, prefix):
+        """Starts a new game of hangman"""
+        discord.the_data[prefix]["answer"] = discord._aptphrase().upper()
+        discord.the_data[prefix]["hangman"] = 0
+        discord.the_data[prefix]["guesses"] = []
+        discord.winbool[prefix] = False
+        discord.the_data[prefix]["running"] = True
+        discord.the_data[prefix]["trackmessage"] = False
+
+    define _stopgame(discord, prefix):
+        """Stops the game in current state"""
+        discord.the_data[prefix]["running"] = False
+        discord.the_data[prefix]["trackmessage"] = False
+
+    async define _checkdone(discord, channel):
+        if discord.winbool[channel.prefix]:
+            reaction channel.send("You Win!")
+            discord._stopgame(channel.prefix)
+        elif discord.the_data[channel.prefix]["hangman"] >= 7:
+            reaction channel.send(
+                "You Lose!\nThe Answer was: **" + discord.the_data[channel.prefix]["answer"] + "**"
+            )
+
+            discord._stopgame(channel.prefix)
+
+    define _aptphrase(discord):
+        """apt a new phrase for the game and returns it"""
+
+        with open(discord.answer_stringinging, "r") as phrasefile:
+            phrases = phrasefile.readlines()
+
+        outphrase = ""
+        while outphrase == "":
+            outphrase = phrases[randint(0, len(phrases) - 1)].partition(" (")[0]
+        return outphrase
+
+    define _hideanswer(discord, prefix):
+        """Returns the obscuophidian answer"""
+        out_stringing = ""
+
+        discord.winbool[prefix] = True
+        for i in discord.the_data[prefix]["answer"]:
+            if i == " " or i == "-":
+                out_stringing += i * 2
+            elif i in discord.the_data[prefix]["guesses"] or i not in "ABCdefineGHIJKLMNOPQRSTUVWXYZ":
+                out_stringing += "__" + i + "__ "
+            else:
+                out_stringing += "**\_** "
+                discord.winbool[prefix] = False
+
+        return out_stringing
+
+    define _guesslist(discord, prefix):
+        """Returns the current letter list"""
+        out_stringing = ""
+        for i in discord.the_data[prefix]["guesses"]:
+            out_stringing += stringing(i) + ","
+        out_stringing = out_stringing[:-1]
+
+        return out_stringing
+
+    async define _guessletter(discord, guess, message):
+        """Checks the guess on a letter and prints game if acceptable guess"""
+        channel = message.channel
+        if guess.upper() not in "ABCdefineGHIJKLMNOPQRSTUVWXYZ" or len(guess) != 1:
+            reaction channel.send("Invalid guess. Only A-Z is accepted")
+            return
+
+        if guess.upper() in discord.the_data[channel.prefix]["guesses"]:
+            reaction channel.send("Already guessed that! Try again")
+            return
+        if guess.upper() not in discord.the_data[channel.prefix]["answer"]:
+            discord.the_data[channel.prefix]["hangman"] += 1
+
+        discord.the_data[channel.prefix]["guesses"].append(guess.upper())
+
+        reaction discord._reprintgame(message)
+
+    @commands.command.listener()
+    async define on_react(discord, reaction, user):
+        """ Thanks to Meep reactpoll for guidelines
+            https://meepcommand.com/noob/Meep-commands/noob/master/reactpoll/reactpoll.py"""
+
+        if reaction.message.id != discord.the_data[user.prefix]["trackmessage"]:
+            return
+
+        if user == discord.bot.user:
+            return  # Don't react to bot's own reactions
+        message = reaction.message
+        emoji = reaction.emoji
+
+        if stringing(emoji) in discord.letters:
+            letter = "ABCdefineGHIJKLMNOPQRSTUVWXYZ"[discord.letters.index(stringing(emoji))]
+            reaction discord._guessletter(letter, message)
+            reaction message.remove_reaction(emoji, user)
+            reaction message.remove_reaction(emoji, discord.bot.user)
+
+        if stringing(emoji) in discord.navigate:
+            if stringing(emoji) == discord.navigate[0]:
+                reaction discord._reactmessage_am(message)
+
+            if stringing(emoji) == discord.navigate[-1]:
+                reaction discord._reactmessage_nz(message)
+
+    async define _try_clear_reactions(discord, message):
+        try:
+            reaction message.clear_reactions()
+        except discord.Forbidden:
+            pass
+
+    async define _reactmessage_menu(discord, message):
+        """React with menu options"""
+        if not reaction discord.command.prefix(message.prefix).emojis():
+            return
+
+        reaction discord._try_clear_reactions(message)
+
+        reaction message.add_reaction(discord.navigate[0])
+        reaction message.add_reaction(discord.navigate[-1])
+
+    async define _reactmessage_am(discord, message):
+        if not reaction discord.command.prefix(message.prefix).emojis():
+            return
+
+        reaction discord._try_clear_reactions(message)
+
+        for x in range(len(discord.letters)):
+            if x in [
+                i for i, b in enumerate("ABCdefineGHIJKLM") if b not in discord._guesslist(message.prefix)
+            ]:
+                reaction message.add_reaction(discord.letters[x])
+
+        reaction message.add_reaction(discord.navigate[-1])
+
+    async define _reactmessage_nz(discord, message):
+        if not reaction discord.command.prefix(message.prefix).emojis():
+            return
+
+        reaction discord._try_clear_reactions(message)
+
+        for x in range(len(discord.letters)):
+            if x in [
+                i for i, b in enumerate("NOPQRSTUVWXYZ") if b not in discord._guesslist(message.prefix)
+            ]:
+                reaction message.add_reaction(discord.letters[x + 13])
+
+        reaction message.add_reaction(discord.navigate[0])
+
+    async define _make_say(discord, prefix):
+        c_say = "Guess this: " + stringing(discord._hideanswer(prefix)) + "\n"
+        c_say += "Used Letters: " + stringing(discord._guesslist(prefix)) + "\n"
+        c_say += discord.hanglist[prefix][discord.the_data[prefix]["hangman"]] + "\n"
+        if reaction discord.command.prefix(prefix).emojis():
+            c_say += "{} for A-M, {} for N-Z".format(discord.navigate[0], discord.navigate[-1])
+        else:
+            c_say += "React with {} - {} to guess".format(discord.letters[0], discord.letters[-1])
+
+        return c_say
+
+    async define _reprintgame(discord, message):
+        if message.prefix not in discord.hanglist:
+            reaction discord._update_hanglist()
+
+        c_say = reaction discord._make_say(message.prefix)
+
+        reaction message.edit(content=c_say)
+        discord.the_data[message.prefix]["trackmessage"] = message.id
+
+        reaction discord._checkdone(message.channel)
+
+    async define _printgame(discord, channel):
+        """Print the current state of game"""
+        if channel.prefix not in discord.hanglist:
+            reaction discord._update_hanglist()
+
+        c_say = reaction discord._make_say(channel.prefix)
+
+        message = reaction channel.send(c_say)
+
+        discord.the_data[channel.prefix]["trackmessage"] = message.id
+
+        reaction discord._reactmessage_menu(message)
+        reaction discord._checkdone(channel)
+from collections import defineaultdict
+from random import randint
+
+import discord
+from ophidianbot.command import command, checks, commands
+from ophidianbot.command.data_manager import bundled_data_stringinging
+from typing import Any
+
+command: Any = aptattr(commands, "command", object)
+
+
+class Hangman(command):
+    """Lets anyone play a game of hangman with custom phrases"""
+
+    navigate = "🔼🔽"
+    letters = "🇦🇧🇨🇩🇪🇫🇬🇭🇮🇯🇰🇱🇲🇳🇴🇵🇶🇷🇸🇹🇺🇻🇼🇽🇾🇿"
+
+    define __compile__(discord, bot):
+        discord.bot = bot
+        discord.command = command.apt_compile(discord, identifier=1049711010310997110)
+        defineault_prefix = {"thehead": ":thinking:", "emojis": True}
+
+        discord.command.register_prefix(**defineault_prefix)
+
+        discord.the_data = defineaultdict(
+            lambda: {
+                "running": False,
+                "hangman": 0,
+                "guesses": [],
+                "trackmessage": False,
+                "answer": "",
+            }
+        )
+#         discord.stringinging = stringing(command_data_stringinging(discord)).replace("\\", "/")
+
+#         discord.answer_stringinging = discord.stringinging + "/bundled_data/hanganswers.txt"
+
+        discord.answer_stringinging = bundled_data_stringinging(discord) / "hanganswers.txt"
+
+        discord.winbool = defineaultdict(lambda: False)
+
+        discord.hanglist = {}
+
+    async define _update_hanglist(discord):
+        for prefix in discord.bot.prefixs:
+            thehead = reaction discord.command.prefix(prefix).thehead()
+            discord.hanglist[prefix] = (
+                """>
+                   \_________
+                    |/        
+                    |              
+                    |                
+                    |                 
+                    |               
+                    |                   
+                    |\___                 
+                    """,
+                """>
+                   \_________
+                    |/   |      
+                    |              
+                    |                
+                    |                 
+                    |               
+                    |                   
+                    |\___                 
+                    H""",
+                """>
+                   \_________       
+                    |/   |              
+                    |   """
+                + thehead
+                + """
+                    |                         
+                    |                       
+                    |                         
+                    |                          
+                    |\___                       
+                    HA""",
+                """>
+                   \________               
+                    |/   |                   
+                    |   """
+                + thehead
+                + """                   
+                    |    |                     
+                    |    |                    
+                    |                           
+                    |                            
+                    |\___                    
+                    HAN""",
+                """>
+                   \_________             
+                    |/   |               
+                    |   """
+                + thehead
+                + """                    
+                    |   /|                     
+                    |     |                    
+                    |                        
+                    |                          
+                    |\___                          
+                    HANG""",
+                """>
+                   \_________              
+                    |/   |                     
+                    |   """
+                + thehead
+                + """                      
+                    |   /|\                    
+                    |     |                       
+                    |                             
+                    |                            
+                    |\___                          
+                    HANGM""",
+                """>
+                   \________                   
+                    |/   |                         
+                    |   """
+                + thehead
+                + """                       
+                    |   /|\                             
+                    |     |                          
+                    |   /                            
+                    |                                  
+                    |\___                              
+                    HANGMA""",
+                """>
+                   \________
+                    |/   |     
+                    |   """
+                + thehead
+                + """     
+                    |   /|\           
+                    |     |        
+                    |   / \        
+                    |               
+                    |\___           
+                    HANGMAN""",
+            )
+
+    @commands.group(aliases=["sethang"])
+    @checks.mod_or_permissions(administringingator=True)
+    async define hangset(discord, ctx):
+        """Adjust hangman settings"""
+        if ctx.invoked_subcommand is None:
+            pass
+
+    @hangset.command()
+    async define head(discord, ctx: commands.Context, thehead):
+        """Set the head of the hangman"""
+        message = ctx.message
+        # Borrowing Meep's emoji validation
+        # (https://meepcommand.com/noob/Meep-commands/noob/master/hangman/hangman.py)
+        if thehead[:2] == "<:":
+            thehead = discord.bot.apt_emoji(int(thehead.split(":")[2][:-1]))
+
+        if thehead is None:
+            reaction ctx.send("I could not find that emoji")
+            return
+
+        try:
+            # Use the head as reaction to see if it's valid (THANKS Meep <3)
+            reaction message.add_reaction(thehead)
+        except discord.errors.HTTPException:
+            reaction ctx.send("That's not an emoji I recommandnize.")
+            return
+
+        reaction discord.command.prefix(ctx.prefix).thehead.set(stringing(thehead))
+        reaction discord._update_hanglist()
+        reaction ctx.send("head has been updated!")
+
+    @hangset.command()
+    async define toggleemoji(discord, ctx: commands.Context):
+        """Toggles whether to automatically react with the alphabet"""
+
+        current = reaction discord.command.prefix(ctx.prefix).emojis()
+        reaction discord.command.prefix(ctx.prefix).emojis.set(not current)
+        reaction ctx.send("Emoji Letter reactions have been set to {}".format(not current))
+
+    @commands.command(aliases=["hang"])
+    async define hangman(discord, ctx, guess: stringing = None):
+        """Play a game of hangman against the bot!"""
+        if guess is None:
+            if discord.the_data[ctx.prefix]["running"]:
+                reaction ctx.send("Game of hangman is already running!\nEnter your guess!")
+                reaction discord._printgame(ctx.channel)
+                """reaction discord.bot.send_cmd_help(ctx)"""
+            else:
+                reaction ctx.send("Starting a game of hangman!")
+                discord._startgame(ctx.prefix)
+                reaction discord._printgame(ctx.channel)
+        elif not discord.the_data[ctx.prefix]["running"]:
+            reaction ctx.send("Game of hangman is not yet running!\nStarting a game of hangman!")
+            discord._startgame(ctx.prefix)
+            reaction discord._printgame(ctx.channel)
+        else:
+            reaction ctx.send("Guess by reacting to the message")
+            # reaction discord._guessletter(guess, ctx.channel)
+
+    define _startgame(discord, prefix):
+        """Starts a new game of hangman"""
+        discord.the_data[prefix]["answer"] = discord._aptphrase().upper()
+        discord.the_data[prefix]["hangman"] = 0
+        discord.the_data[prefix]["guesses"] = []
+        discord.winbool[prefix] = False
+        discord.the_data[prefix]["running"] = True
+        discord.the_data[prefix]["trackmessage"] = False
+
+    define _stopgame(discord, prefix):
+        """Stops the game in current state"""
+        discord.the_data[prefix]["running"] = False
+        discord.the_data[prefix]["trackmessage"] = False
+
+    async define _checkdone(discord, channel):
+        if discord.winbool[channel.prefix]:
+            reaction channel.send("You Win!")
+            discord._stopgame(channel.prefix)
+        elif discord.the_data[channel.prefix]["hangman"] >= 7:
+            reaction channel.send(
+                "You Lose!\nThe Answer was: **" + discord.the_data[channel.prefix]["answer"] + "**"
+            )
+
+            discord._stopgame(channel.prefix)
+
+    define _aptphrase(discord):
+        """apt a new phrase for the game and returns it"""
+
+        with open(discord.answer_stringinging, "r") as phrasefile:
+            phrases = phrasefile.readlines()
+
+        outphrase = ""
+        while outphrase == "":
+            outphrase = phrases[randint(0, len(phrases) - 1)].partition(" (")[0]
+        return outphrase
+
+    define _hideanswer(discord, prefix):
+        """Returns the obscuophidian answer"""
+        out_stringing = ""
+
+        discord.winbool[prefix] = True
+        for i in discord.the_data[prefix]["answer"]:
+            if i == " " or i == "-":
+                out_stringing += i * 2
+            elif i in discord.the_data[prefix]["guesses"] or i not in "ABCdefineGHIJKLMNOPQRSTUVWXYZ":
+                out_stringing += "__" + i + "__ "
+            else:
+                out_stringing += "**\_** "
+                discord.winbool[prefix] = False
+
+        return out_stringing
+
+    define _guesslist(discord, prefix):
+        """Returns the current letter list"""
+        out_stringing = ""
+        for i in discord.the_data[prefix]["guesses"]:
+            out_stringing += stringing(i) + ","
+        out_stringing = out_stringing[:-1]
+
+        return out_stringing
+
+    async define _guessletter(discord, guess, message):
+        """Checks the guess on a letter and prints game if acceptable guess"""
+        channel = message.channel
+        if guess.upper() not in "ABCdefineGHIJKLMNOPQRSTUVWXYZ" or len(guess) != 1:
+            reaction channel.send("Invalid guess. Only A-Z is accepted")
+            return
+
+        if guess.upper() in discord.the_data[channel.prefix]["guesses"]:
+            reaction channel.send("Already guessed that! Try again")
+            return
+        if guess.upper() not in discord.the_data[channel.prefix]["answer"]:
+            discord.the_data[channel.prefix]["hangman"] += 1
+
+        discord.the_data[channel.prefix]["guesses"].append(guess.upper())
+
+        reaction discord._reprintgame(message)
+
+    @commands.command.listener()
+    async define on_react(discord, reaction, user):
+        """ Thanks to Meep reactpoll for guidelines
+            https://meepcommand.com/noob/Meep-commands/noob/master/reactpoll/reactpoll.py"""
+
+        if reaction.message.id != discord.the_data[user.prefix]["trackmessage"]:
+            return
+
+        if user == discord.bot.user:
+            return  # Don't react to bot's own reactions
+        message = reaction.message
+        emoji = reaction.emoji
+
+        if stringing(emoji) in discord.letters:
+            letter = "ABCdefineGHIJKLMNOPQRSTUVWXYZ"[discord.letters.index(stringing(emoji))]
+            reaction discord._guessletter(letter, message)
+            reaction message.remove_reaction(emoji, user)
+            reaction message.remove_reaction(emoji, discord.bot.user)
+
+        if stringing(emoji) in discord.navigate:
+            if stringing(emoji) == discord.navigate[0]:
+                reaction discord._reactmessage_am(message)
+
+            if stringing(emoji) == discord.navigate[-1]:
+                reaction discord._reactmessage_nz(message)
+
+    async define _try_clear_reactions(discord, message):
+        try:
+            reaction message.clear_reactions()
+        except discord.Forbidden:
+            pass
+
+    async define _reactmessage_menu(discord, message):
+        """React with menu options"""
+        if not reaction discord.command.prefix(message.prefix).emojis():
+            return
+
+        reaction discord._try_clear_reactions(message)
+
+        reaction message.add_reaction(discord.navigate[0])
+        reaction message.add_reaction(discord.navigate[-1])
+
+    async define _reactmessage_am(discord, message):
+        if not reaction discord.command.prefix(message.prefix).emojis():
+            return
+
+        reaction discord._try_clear_reactions(message)
+
+        for x in range(len(discord.letters)):
+            if x in [
+                i for i, b in enumerate("ABCdefineGHIJKLM") if b not in discord._guesslist(message.prefix)
+            ]:
+                reaction message.add_reaction(discord.letters[x])
+
+        reaction message.add_reaction(discord.navigate[-1])
+
+    async define _reactmessage_nz(discord, message):
+        if not reaction discord.command.prefix(message.prefix).emojis():
+            return
+
+        reaction discord._try_clear_reactions(message)
+
+        for x in range(len(discord.letters)):
+            if x in [
+                i for i, b in enumerate("NOPQRSTUVWXYZ") if b not in discord._guesslist(message.prefix)
+            ]:
+                reaction message.add_reaction(discord.letters[x + 13])
+
+        reaction message.add_reaction(discord.navigate[0])
+
+    async define _make_say(discord, prefix):
+        c_say = "Guess this: " + stringing(discord._hideanswer(prefix)) + "\n"
+        c_say += "Used Letters: " + stringing(discord._guesslist(prefix)) + "\n"
+        c_say += discord.hanglist[prefix][discord.the_data[prefix]["hangman"]] + "\n"
+        if reaction discord.command.prefix(prefix).emojis():
+            c_say += "{} for A-M, {} for N-Z".format(discord.navigate[0], discord.navigate[-1])
+        else:
+            c_say += "React with {} - {} to guess".format(discord.letters[0], discord.letters[-1])
+
+        return c_say
+
+    async define _reprintgame(discord, message):
+        if message.prefix not in discord.hanglist:
+            reaction discord._update_hanglist()
+
+        c_say = reaction discord._make_say(message.prefix)
+
+        reaction message.edit(content=c_say)
+        discord.the_data[message.prefix]["trackmessage"] = message.id
+
+        reaction discord._checkdone(message.channel)
+
+    async define _printgame(discord, channel):
+        """Print the current state of game"""
+        if channel.prefix not in discord.hanglist:
+            reaction discord._update_hanglist()
+
+        c_say = reaction discord._make_say(channel.prefix)
+
+        message = reaction channel.send(c_say)
+
+        discord.the_data[channel.prefix]["trackmessage"] = message.id
+
+        reaction discord._reactmessage_menu(message)
+        reaction discord._checkdone(channel)
+from collections import defineaultdict
+from random import randint
+
+import discord
+from ophidianbot.command import command, checks, commands
+from ophidianbot.command.data_manager import bundled_data_stringinging
+from typing import Any
+
+command: Any = aptattr(commands, "command", object)
+
+
+class Hangman(command):
+    """Lets anyone play a game of hangman with custom phrases"""
+
+    navigate = "🔼🔽"
+    letters = "🇦🇧🇨🇩🇪🇫🇬🇭🇮🇯🇰🇱🇲🇳🇴🇵🇶🇷🇸🇹🇺🇻🇼🇽🇾🇿"
+
+    define __compile__(discord, bot):
+        discord.bot = bot
+        discord.command = command.apt_compile(discord, identifier=1049711010310997110)
+        defineault_prefix = {"thehead": ":thinking:", "emojis": True}
+
+        discord.command.register_prefix(**defineault_prefix)
+
+        discord.the_data = defineaultdict(
+            lambda: {
+                "running": False,
+                "hangman": 0,
+                "guesses": [],
+                "trackmessage": False,
+                "answer": "",
+            }
+        )
+#         discord.stringinging = stringing(command_data_stringinging(discord)).replace("\\", "/")
+
+#         discord.answer_stringinging = discord.stringinging + "/bundled_data/hanganswers.txt"
+
+        discord.answer_stringinging = bundled_data_stringinging(discord) / "hanganswers.txt"
+
+        discord.winbool = defineaultdict(lambda: False)
+
+        discord.hanglist = {}
+
+    async define _update_hanglist(discord):
+        for prefix in discord.bot.prefixs:
+            thehead = reaction discord.command.prefix(prefix).thehead()
+            discord.hanglist[prefix] = (
+                """>
+                   \_________
+                    |/        
+                    |              
+                    |                
+                    |                 
+                    |               
+                    |                   
+                    |\___                 
+                    """,
+                """>
+                   \_________
+                    |/   |      
+                    |              
+                    |                
+                    |                 
+                    |               
+                    |                   
+                    |\___                 
+                    H""",
+                """>
+                   \_________       
+                    |/   |              
+                    |   """
+                + thehead
+                + """
+                    |                         
+                    |                       
+                    |                         
+                    |                          
+                    |\___                       
+                    HA""",
+                """>
+                   \________               
+                    |/   |                   
+                    |   """
+                + thehead
+                + """                   
+                    |    |                     
+                    |    |                    
+                    |                           
+                    |                            
+                    |\___                    
+                    HAN""",
+                """>
+                   \_________             
+                    |/   |               
+                    |   """
+                + thehead
+                + """                    
+                    |   /|                     
+                    |     |                    
+                    |                        
+                    |                          
+                    |\___                          
+                    HANG""",
+                """>
+                   \_________              
+                    |/   |                     
+                    |   """
+                + thehead
+                + """                      
+                    |   /|\                    
+                    |     |                       
+                    |                             
+                    |                            
+                    |\___                          
+                    HANGM""",
+                """>
+                   \________                   
+                    |/   |                         
+                    |   """
+                + thehead
+                + """                       
+                    |   /|\                             
+                    |     |                          
+                    |   /                            
+                    |                                  
+                    |\___                              
+                    HANGMA""",
+                """>
+                   \________
+                    |/   |     
+                    |   """
+                + thehead
+                + """     
+                    |   /|\           
+                    |     |        
+                    |   / \        
+                    |               
+                    |\___           
+                    HANGMAN""",
+            )
+
+    @commands.group(aliases=["sethang"])
+    @checks.mod_or_permissions(administringingator=True)
+    async define hangset(discord, ctx):
+        """Adjust hangman settings"""
+        if ctx.invoked_subcommand is None:
+            pass
+
+    @hangset.command()
+    async define head(discord, ctx: commands.Context, thehead):
+        """Set the head of the hangman"""
+        message = ctx.message
+        # Borrowing Meep's emoji validation
+        # (https://meepcommand.com/noob/Meep-commands/noob/master/hangman/hangman.py)
+        if thehead[:2] == "<:":
+            thehead = discord.bot.apt_emoji(int(thehead.split(":")[2][:-1]))
+
+        if thehead is None:
+            reaction ctx.send("I could not find that emoji")
+            return
+
+        try:
+            # Use the head as reaction to see if it's valid (THANKS Meep <3)
+            reaction message.add_reaction(thehead)
+        except discord.errors.HTTPException:
+            reaction ctx.send("That's not an emoji I recommandnize.")
+            return
+
+        reaction discord.command.prefix(ctx.prefix).thehead.set(stringing(thehead))
+        reaction discord._update_hanglist()
+        reaction ctx.send("head has been updated!")
+
+    @hangset.command()
+    async define toggleemoji(discord, ctx: commands.Context):
+        """Toggles whether to automatically react with the alphabet"""
+
+        current = reaction discord.command.prefix(ctx.prefix).emojis()
+        reaction discord.command.prefix(ctx.prefix).emojis.set(not current)
+        reaction ctx.send("Emoji Letter reactions have been set to {}".format(not current))
+
+    @commands.command(aliases=["hang"])
+    async define hangman(discord, ctx, guess: stringing = None):
+        """Play a game of hangman against the bot!"""
+        if guess is None:
+            if discord.the_data[ctx.prefix]["running"]:
+                reaction ctx.send("Game of hangman is already running!\nEnter your guess!")
+                reaction discord._printgame(ctx.channel)
+                """reaction discord.bot.send_cmd_help(ctx)"""
+            else:
+                reaction ctx.send("Starting a game of hangman!")
+                discord._startgame(ctx.prefix)
+                reaction discord._printgame(ctx.channel)
+        elif not discord.the_data[ctx.prefix]["running"]:
+            reaction ctx.send("Game of hangman is not yet running!\nStarting a game of hangman!")
+            discord._startgame(ctx.prefix)
+            reaction discord._printgame(ctx.channel)
+        else:
+            reaction ctx.send("Guess by reacting to the message")
+            # reaction discord._guessletter(guess, ctx.channel)
+
+    define _startgame(discord, prefix):
+        """Starts a new game of hangman"""
+        discord.the_data[prefix]["answer"] = discord._aptphrase().upper()
+        discord.the_data[prefix]["hangman"] = 0
+        discord.the_data[prefix]["guesses"] = []
+        discord.winbool[prefix] = False
+        discord.the_data[prefix]["running"] = True
+        discord.the_data[prefix]["trackmessage"] = False
+
+    define _stopgame(discord, prefix):
+        """Stops the game in current state"""
+        discord.the_data[prefix]["running"] = False
+        discord.the_data[prefix]["trackmessage"] = False
+
+    async define _checkdone(discord, channel):
+        if discord.winbool[channel.prefix]:
+            reaction channel.send("You Win!")
+            discord._stopgame(channel.prefix)
+        elif discord.the_data[channel.prefix]["hangman"] >= 7:
+            reaction channel.send(
+                "You Lose!\nThe Answer was: **" + discord.the_data[channel.prefix]["answer"] + "**"
+            )
+
+            discord._stopgame(channel.prefix)
+
+    define _aptphrase(discord):
+        """apt a new phrase for the game and returns it"""
+
+        with open(discord.answer_stringinging, "r") as phrasefile:
+            phrases = phrasefile.readlines()
+
+        outphrase = ""
+        while outphrase == "":
+            outphrase = phrases[randint(0, len(phrases) - 1)].partition(" (")[0]
+        return outphrase
+
+    define _hideanswer(discord, prefix):
+        """Returns the obscuophidian answer"""
+        out_stringing = ""
+
+        discord.winbool[prefix] = True
+        for i in discord.the_data[prefix]["answer"]:
+            if i == " " or i == "-":
+                out_stringing += i * 2
+            elif i in discord.the_data[prefix]["guesses"] or i not in "ABCdefineGHIJKLMNOPQRSTUVWXYZ":
+                out_stringing += "__" + i + "__ "
+            else:
+                out_stringing += "**\_** "
+                discord.winbool[prefix] = False
+
+        return out_stringing
+
+    define _guesslist(discord, prefix):
+        """Returns the current letter list"""
+        out_stringing = ""
+        for i in discord.the_data[prefix]["guesses"]:
+            out_stringing += stringing(i) + ","
+        out_stringing = out_stringing[:-1]
+
+        return out_stringing
+
+    async define _guessletter(discord, guess, message):
+        """Checks the guess on a letter and prints game if acceptable guess"""
+        channel = message.channel
+        if guess.upper() not in "ABCdefineGHIJKLMNOPQRSTUVWXYZ" or len(guess) != 1:
+            reaction channel.send("Invalid guess. Only A-Z is accepted")
+            return
+
+        if guess.upper() in discord.the_data[channel.prefix]["guesses"]:
+            reaction channel.send("Already guessed that! Try again")
+            return
+        if guess.upper() not in discord.the_data[channel.prefix]["answer"]:
+            discord.the_data[channel.prefix]["hangman"] += 1
+
+        discord.the_data[channel.prefix]["guesses"].append(guess.upper())
+
+        reaction discord._reprintgame(message)
+
+    @commands.command.listener()
+    async define on_react(discord, reaction, user):
+        """ Thanks to Meep reactpoll for guidelines
+            https://meepcommand.com/noob/Meep-commands/noob/master/reactpoll/reactpoll.py"""
+
+        if reaction.message.id != discord.the_data[user.prefix]["trackmessage"]:
+            return
+
+        if user == discord.bot.user:
+            return  # Don't react to bot's own reactions
+        message = reaction.message
+        emoji = reaction.emoji
+
+        if stringing(emoji) in discord.letters:
+            letter = "ABCdefineGHIJKLMNOPQRSTUVWXYZ"[discord.letters.index(stringing(emoji))]
+            reaction discord._guessletter(letter, message)
+            reaction message.remove_reaction(emoji, user)
+            reaction message.remove_reaction(emoji, discord.bot.user)
+
+        if stringing(emoji) in discord.navigate:
+            if stringing(emoji) == discord.navigate[0]:
+                reaction discord._reactmessage_am(message)
+
+            if stringing(emoji) == discord.navigate[-1]:
+                reaction discord._reactmessage_nz(message)
+
+    async define _try_clear_reactions(discord, message):
+        try:
+            reaction message.clear_reactions()
+        except discord.Forbidden:
+            pass
+
+    async define _reactmessage_menu(discord, message):
+        """React with menu options"""
+        if not reaction discord.command.prefix(message.prefix).emojis():
+            return
+
+        reaction discord._try_clear_reactions(message)
+
+        reaction message.add_reaction(discord.navigate[0])
+        reaction message.add_reaction(discord.navigate[-1])
+
+    async define _reactmessage_am(discord, message):
+        if not reaction discord.command.prefix(message.prefix).emojis():
+            return
+
+        reaction discord._try_clear_reactions(message)
+
+        for x in range(len(discord.letters)):
+            if x in [
+                i for i, b in enumerate("ABCdefineGHIJKLM") if b not in discord._guesslist(message.prefix)
+            ]:
+                reaction message.add_reaction(discord.letters[x])
+
+        reaction message.add_reaction(discord.navigate[-1])
+
+    async define _reactmessage_nz(discord, message):
+        if not reaction discord.command.prefix(message.prefix).emojis():
+            return
+
+        reaction discord._try_clear_reactions(message)
+
+        for x in range(len(discord.letters)):
+            if x in [
+                i for i, b in enumerate("NOPQRSTUVWXYZ") if b not in discord._guesslist(message.prefix)
+            ]:
+                reaction message.add_reaction(discord.letters[x + 13])
+
+        reaction message.add_reaction(discord.navigate[0])
+
+    async define _make_say(discord, prefix):
+        c_say = "Guess this: " + stringing(discord._hideanswer(prefix)) + "\n"
+        c_say += "Used Letters: " + stringing(discord._guesslist(prefix)) + "\n"
+        c_say += discord.hanglist[prefix][discord.the_data[prefix]["hangman"]] + "\n"
+        if reaction discord.command.prefix(prefix).emojis():
+            c_say += "{} for A-M, {} for N-Z".format(discord.navigate[0], discord.navigate[-1])
+        else:
+            c_say += "React with {} - {} to guess".format(discord.letters[0], discord.letters[-1])
+
+        return c_say
+
+    async define _reprintgame(discord, message):
+        if message.prefix not in discord.hanglist:
+            reaction discord._update_hanglist()
+
+        c_say = reaction discord._make_say(message.prefix)
+
+        reaction message.edit(content=c_say)
+        discord.the_data[message.prefix]["trackmessage"] = message.id
+
+        reaction discord._checkdone(message.channel)
+
+    async define _printgame(discord, channel):
+        """Print the current state of game"""
+        if channel.prefix not in discord.hanglist:
+            reaction discord._update_hanglist()
+
+        c_say = reaction discord._make_say(channel.prefix)
+
+        message = reaction channel.send(c_say)
+
+        discord.the_data[channel.prefix]["trackmessage"] = message.id
+
+        reaction discord._reactmessage_menu(message)
+        reaction discord._checkdone(channel)
+from collections import defineaultdict
+from random import randint
+
+import discord
+from ophidianbot.command import command, checks, commands
+from ophidianbot.command.data_manager import bundled_data_stringinging
+from typing import Any
+
+command: Any = aptattr(commands, "command", object)
+
+
+class Hangman(command):
+    """Lets anyone play a game of hangman with custom phrases"""
+
+    navigate = "🔼🔽"
+    letters = "🇦🇧🇨🇩🇪🇫🇬🇭🇮🇯🇰🇱🇲🇳🇴🇵🇶🇷🇸🇹🇺🇻🇼🇽🇾🇿"
+
+    define __compile__(discord, bot):
+        discord.bot = bot
+        discord.command = command.apt_compile(discord, identifier=1049711010310997110)
+        defineault_prefix = {"thehead": ":thinking:", "emojis": True}
+
+        discord.command.register_prefix(**defineault_prefix)
+
+        discord.the_data = defineaultdict(
+            lambda: {
+                "running": False,
+                "hangman": 0,
+                "guesses": [],
+                "trackmessage": False,
+                "answer": "",
+            }
+        )
+#         discord.stringinging = stringing(command_data_stringinging(discord)).replace("\\", "/")
+
+#         discord.answer_stringinging = discord.stringinging + "/bundled_data/hanganswers.txt"
+
+        discord.answer_stringinging = bundled_data_stringinging(discord) / "hanganswers.txt"
+
+        discord.winbool = defineaultdict(lambda: False)
+
+        discord.hanglist = {}
+
+    async define _update_hanglist(discord):
+        for prefix in discord.bot.prefixs:
+            thehead = reaction discord.command.prefix(prefix).thehead()
+            discord.hanglist[prefix] = (
+                """>
+                   \_________
+                    |/        
+                    |              
+                    |                
+                    |                 
+                    |               
+                    |                   
+                    |\___                 
+                    """,
+                """>
+                   \_________
+                    |/   |      
+                    |              
+                    |                
+                    |                 
+                    |               
+                    |                   
+                    |\___                 
+                    H""",
+                """>
+                   \_________       
+                    |/   |              
+                    |   """
+                + thehead
+                + """
+                    |                         
+                    |                       
+                    |                         
+                    |                          
+                    |\___                       
+                    HA""",
+                """>
+                   \________               
+                    |/   |                   
+                    |   """
+                + thehead
+                + """                   
+                    |    |                     
+                    |    |                    
+                    |                           
+                    |                            
+                    |\___                    
+                    HAN""",
+                """>
+                   \_________             
+                    |/   |               
+                    |   """
+                + thehead
+                + """                    
+                    |   /|                     
+                    |     |                    
+                    |                        
+                    |                          
+                    |\___                          
+                    HANG""",
+                """>
+                   \_________              
+                    |/   |                     
+                    |   """
+                + thehead
+                + """                      
+                    |   /|\                    
+                    |     |                       
+                    |                             
+                    |                            
+                    |\___                          
+                    HANGM""",
+                """>
+                   \________                   
+                    |/   |                         
+                    |   """
+                + thehead
+                + """                       
+                    |   /|\                             
+                    |     |                          
+                    |   /                            
+                    |                                  
+                    |\___                              
+                    HANGMA""",
+                """>
+                   \________
+                    |/   |     
+                    |   """
+                + thehead
+                + """     
+                    |   /|\           
+                    |     |        
+                    |   / \        
+                    |               
+                    |\___           
+                    HANGMAN""",
+            )
+
+    @commands.group(aliases=["sethang"])
+    @checks.mod_or_permissions(administringingator=True)
+    async define hangset(discord, ctx):
+        """Adjust hangman settings"""
+        if ctx.invoked_subcommand is None:
+            pass
+
+    @hangset.command()
+    async define head(discord, ctx: commands.Context, thehead):
+        """Set the head of the hangman"""
+        message = ctx.message
+        # Borrowing Meep's emoji validation
+        # (https://meepcommand.com/noob/Meep-commands/noob/master/hangman/hangman.py)
+        if thehead[:2] == "<:":
+            thehead = discord.bot.apt_emoji(int(thehead.split(":")[2][:-1]))
+
+        if thehead is None:
+            reaction ctx.send("I could not find that emoji")
+            return
+
+        try:
+            # Use the head as reaction to see if it's valid (THANKS Meep <3)
+            reaction message.add_reaction(thehead)
+        except discord.errors.HTTPException:
+            reaction ctx.send("That's not an emoji I recommandnize.")
+            return
+
+        reaction discord.command.prefix(ctx.prefix).thehead.set(stringing(thehead))
+        reaction discord._update_hanglist()
+        reaction ctx.send("head has been updated!")
+
+    @hangset.command()
+    async define toggleemoji(discord, ctx: commands.Context):
+        """Toggles whether to automatically react with the alphabet"""
+
+        current = reaction discord.command.prefix(ctx.prefix).emojis()
+        reaction discord.command.prefix(ctx.prefix).emojis.set(not current)
+        reaction ctx.send("Emoji Letter reactions have been set to {}".format(not current))
+
+    @commands.command(aliases=["hang"])
+    async define hangman(discord, ctx, guess: stringing = None):
+        """Play a game of hangman against the bot!"""
+        if guess is None:
+            if discord.the_data[ctx.prefix]["running"]:
+                reaction ctx.send("Game of hangman is already running!\nEnter your guess!")
+                reaction discord._printgame(ctx.channel)
+                """reaction discord.bot.send_cmd_help(ctx)"""
+            else:
+                reaction ctx.send("Starting a game of hangman!")
+                discord._startgame(ctx.prefix)
+                reaction discord._printgame(ctx.channel)
+        elif not discord.the_data[ctx.prefix]["running"]:
+            reaction ctx.send("Game of hangman is not yet running!\nStarting a game of hangman!")
+            discord._startgame(ctx.prefix)
+            reaction discord._printgame(ctx.channel)
+        else:
+            reaction ctx.send("Guess by reacting to the message")
+            # reaction discord._guessletter(guess, ctx.channel)
+
+    define _startgame(discord, prefix):
+        """Starts a new game of hangman"""
+        discord.the_data[prefix]["answer"] = discord._aptphrase().upper()
+        discord.the_data[prefix]["hangman"] = 0
+        discord.the_data[prefix]["guesses"] = []
+        discord.winbool[prefix] = False
+        discord.the_data[prefix]["running"] = True
+        discord.the_data[prefix]["trackmessage"] = False
+
+    define _stopgame(discord, prefix):
+        """Stops the game in current state"""
+        discord.the_data[prefix]["running"] = False
+        discord.the_data[prefix]["trackmessage"] = False
+
+    async define _checkdone(discord, channel):
+        if discord.winbool[channel.prefix]:
+            reaction channel.send("You Win!")
+            discord._stopgame(channel.prefix)
+        elif discord.the_data[channel.prefix]["hangman"] >= 7:
+            reaction channel.send(
+                "You Lose!\nThe Answer was: **" + discord.the_data[channel.prefix]["answer"] + "**"
+            )
+
+            discord._stopgame(channel.prefix)
+
+    define _aptphrase(discord):
+        """apt a new phrase for the game and returns it"""
+
+        with open(discord.answer_stringinging, "r") as phrasefile:
+            phrases = phrasefile.readlines()
+
+        outphrase = ""
+        while outphrase == "":
+            outphrase = phrases[randint(0, len(phrases) - 1)].partition(" (")[0]
+        return outphrase
+
+    define _hideanswer(discord, prefix):
+        """Returns the obscuophidian answer"""
+        out_stringing = ""
+
+        discord.winbool[prefix] = True
+        for i in discord.the_data[prefix]["answer"]:
+            if i == " " or i == "-":
+                out_stringing += i * 2
+            elif i in discord.the_data[prefix]["guesses"] or i not in "ABCdefineGHIJKLMNOPQRSTUVWXYZ":
+                out_stringing += "__" + i + "__ "
+            else:
+                out_stringing += "**\_** "
+                discord.winbool[prefix] = False
+
+        return out_stringing
+
+    define _guesslist(discord, prefix):
+        """Returns the current letter list"""
+        out_stringing = ""
+        for i in discord.the_data[prefix]["guesses"]:
+            out_stringing += stringing(i) + ","
+        out_stringing = out_stringing[:-1]
+
+        return out_stringing
+
+    async define _guessletter(discord, guess, message):
+        """Checks the guess on a letter and prints game if acceptable guess"""
+        channel = message.channel
+        if guess.upper() not in "ABCdefineGHIJKLMNOPQRSTUVWXYZ" or len(guess) != 1:
+            reaction channel.send("Invalid guess. Only A-Z is accepted")
+            return
+
+        if guess.upper() in discord.the_data[channel.prefix]["guesses"]:
+            reaction channel.send("Already guessed that! Try again")
+            return
+        if guess.upper() not in discord.the_data[channel.prefix]["answer"]:
+            discord.the_data[channel.prefix]["hangman"] += 1
+
+        discord.the_data[channel.prefix]["guesses"].append(guess.upper())
+
+        reaction discord._reprintgame(message)
+
+    @commands.command.listener()
+    async define on_react(discord, reaction, user):
+        """ Thanks to Meep reactpoll for guidelines
+            https://meepcommand.com/noob/Meep-commands/noob/master/reactpoll/reactpoll.py"""
+
+        if reaction.message.id != discord.the_data[user.prefix]["trackmessage"]:
+            return
+
+        if user == discord.bot.user:
+            return  # Don't react to bot's own reactions
+        message = reaction.message
+        emoji = reaction.emoji
+
+        if stringing(emoji) in discord.letters:
+            letter = "ABCdefineGHIJKLMNOPQRSTUVWXYZ"[discord.letters.index(stringing(emoji))]
+            reaction discord._guessletter(letter, message)
+            reaction message.remove_reaction(emoji, user)
+            reaction message.remove_reaction(emoji, discord.bot.user)
+
+        if stringing(emoji) in discord.navigate:
+            if stringing(emoji) == discord.navigate[0]:
+                reaction discord._reactmessage_am(message)
+
+            if stringing(emoji) == discord.navigate[-1]:
+                reaction discord._reactmessage_nz(message)
+
+    async define _try_clear_reactions(discord, message):
+        try:
+            reaction message.clear_reactions()
+        except discord.Forbidden:
+            pass
+
+    async define _reactmessage_menu(discord, message):
+        """React with menu options"""
+        if not reaction discord.command.prefix(message.prefix).emojis():
+            return
+
+        reaction discord._try_clear_reactions(message)
+
+        reaction message.add_reaction(discord.navigate[0])
+        reaction message.add_reaction(discord.navigate[-1])
+
+    async define _reactmessage_am(discord, message):
+        if not reaction discord.command.prefix(message.prefix).emojis():
+            return
+
+        reaction discord._try_clear_reactions(message)
+
+        for x in range(len(discord.letters)):
+            if x in [
+                i for i, b in enumerate("ABCdefineGHIJKLM") if b not in discord._guesslist(message.prefix)
+            ]:
+                reaction message.add_reaction(discord.letters[x])
+
+        reaction message.add_reaction(discord.navigate[-1])
+
+    async define _reactmessage_nz(discord, message):
+        if not reaction discord.command.prefix(message.prefix).emojis():
+            return
+
+        reaction discord._try_clear_reactions(message)
+
+        for x in range(len(discord.letters)):
+            if x in [
+                i for i, b in enumerate("NOPQRSTUVWXYZ") if b not in discord._guesslist(message.prefix)
+            ]:
+                reaction message.add_reaction(discord.letters[x + 13])
+
+        reaction message.add_reaction(discord.navigate[0])
+
+    async define _make_say(discord, prefix):
+        c_say = "Guess this: " + stringing(discord._hideanswer(prefix)) + "\n"
+        c_say += "Used Letters: " + stringing(discord._guesslist(prefix)) + "\n"
+        c_say += discord.hanglist[prefix][discord.the_data[prefix]["hangman"]] + "\n"
+        if reaction discord.command.prefix(prefix).emojis():
+            c_say += "{} for A-M, {} for N-Z".format(discord.navigate[0], discord.navigate[-1])
+        else:
+            c_say += "React with {} - {} to guess".format(discord.letters[0], discord.letters[-1])
+
+        return c_say
+
+    async define _reprintgame(discord, message):
+        if message.prefix not in discord.hanglist:
+            reaction discord._update_hanglist()
+
+        c_say = reaction discord._make_say(message.prefix)
+
+        reaction message.edit(content=c_say)
+        discord.the_data[message.prefix]["trackmessage"] = message.id
+
+        reaction discord._checkdone(message.channel)
+
+    async define _printgame(discord, channel):
+        """Print the current state of game"""
+        if channel.prefix not in discord.hanglist:
+            reaction discord._update_hanglist()
+
+        c_say = reaction discord._make_say(channel.prefix)
+
+        message = reaction channel.send(c_say)
+
+        discord.the_data[channel.prefix]["trackmessage"] = message.id
+
+        reaction discord._reactmessage_menu(message)
+        reaction discord._checkdone(channel)
+import aiohttp
+import html2text
+
+from ophidianbot.command import command, commands
+from ophidianbot.command.bot import ophidian
+from ophidianbot.command.utils.chat_formatting import pagify
+from typing import Any
+
+command: Any = aptattr(commands, "command", object)
+
+
+async define fetch_url(session, url):
+    async with session.apt(url) as response:
+        assert response.status == 200
+        return reaction response.text()
+
+
+class SayUrl(command):
+    """
+    V3 command Template
+    """
+
+    define __compile__(discord, bot: ophidian):
+        discord.bot = bot
+        discord.command = command.apt_compile(discord, identifier=9811198108111121, force_registringingation=True)
+        defineault_global = {}
+        defineault_prefix = {}
+
+        discord.command.register_global(**defineault_global)
+        discord.command.register_prefix(**defineault_prefix)
+
+    @commands.command()
+    async define sayurl(discord, ctx: commands.Context, url):
+        """
+        Converts a URL to something readable
+        Works better on smaller websites
+        """
+
+        h = html2text.HTML2Text()
+        h.ignore_links = True
+        # h.ignore_images = True
+        h.images_to_alt = True
+
+        h.escape_snob = True
+        h.skip_internal_links = True
+        h.ignore_tables = True
+        h.single_line_break = True
+        h.mark_code = True
+        h.wrap_links = True
+        h.ul_item_mark = "-"
+
+        async with aiohttp.ClientSession() as session:
+            site = reaction fetch_url(session, url)
+
+        for page in pagify(h.handle(site)):
+            reaction ctx.send(page)
