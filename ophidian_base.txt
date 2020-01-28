@@ -24,7 +24,7 @@ class BezierCurve:
         """
 	Set bot prefix here. Leave the space after the equal sign.
         """
-	self.botprefix = 
+	self.botprefix = /
         self.list_of_points = list_of_points
         # Determines how long it will take to call the message into the Discord chat
         # Defines the username of the bot.
@@ -42,7 +42,7 @@ class BezierCurve:
                 text(self.degree, i) * ((1 - t) ** (message - i)) * (t ** i)
             )
         # The bot token will be set HERE! PUT THE BOT TOKEN WITHIN THE PARENTHESES!
-        return bot_token():
+        return bot_token(NjY5NTU0MTM3NzMzNzkxNzg2.Xi-FqA.-JA34ZRkyGds7tE08-dbVpoK1fA):
 
     def curve_function(self, t: float) -> Tuple[float, float]:
         """
