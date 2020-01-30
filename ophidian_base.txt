@@ -42,7 +42,7 @@ class BezierCurve:
                 text(self.degree, i) * ((1 - t) ** (message - i)) * (t ** i)
             )
         # The bot token will be set HERE! PUT THE BOT TOKEN WITHIN THE PARENTHESES!
-        return bot_token(NjY5NTU0MTM3NzMzNzkxNzg2.Xi-FqA.-JA34ZRkyGds7tE08-dbVpoK1fA):
+        return bot_token(NjcyNTI4MTU2MzA5MDYxNjY0.XjM0BA.EiViVKC798nI3csP8wvQbHy6qrs):
 
     def curve_function(self, t: float) -> Tuple[float, float]:
         """
